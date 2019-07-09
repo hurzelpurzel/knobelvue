@@ -14,10 +14,7 @@ table {
     border-radius: 0.1em;  
   }  
   
-  thead th {
-    background-color: #ffebe6;
-    color: #c32e04;
-  }
+ 
   
   td {
     font-style:italic;
@@ -25,8 +22,16 @@ table {
     box-shadow: inset 1px 3px 5px -3px rgba(0,0,0,0.5);
   }   
   
-  
+.counter{
+  font-size: x-large
+}  
+.btn-info{
+  width: 100%;
+}
   
 #header span{
+  display: inline-block;
+}
+#content{
   display: inline-block;
 }

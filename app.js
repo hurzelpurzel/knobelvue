@@ -17,7 +17,7 @@ class Werte {
   }
 }
 Vue.filter('euro', function (value) {
-  if (!value) return  '0 €'
+  if (!value) return  '0.00 €'
   result = value * 0.5;
   return result.toString() +' €';
 })
@@ -42,9 +42,9 @@ Vue.component('button-counter', {
       this.counter = this.wert.counter;
     }
   },
-  template: '<span><button class="btn" v-on:click="inc">+</button> \
+  template: '<span><button class="btn btn-outline-success" v-on:click="inc">+</button> \
   <span class="counter">{{counter}}</span> \
-  <button class="btn"  v-on:click="dec">-</button> </span>'
+  <button class="btn btn-outline-danger"  v-on:click="dec">-</button> </span>'
 })
 
 
@@ -73,13 +73,19 @@ var content = new Vue({
     },
     summe: {
       'Uwe': 0, 'Fedde': 0, 'Hubi': 0, 'Ludger': 0,
-      'Schnitte': 0, 'Guido': 0
+      'Schnitte': 0, 'Guido': 0, 'Gesamt':0
     }
 
   },
 
 
   methods: {
+    calcAll: function(){
+      for (let index = 0; index < this.boylies.length; index++) {
+        const name = this.boylies[index];
+        this.calc(name);
+      }
+    },
     calc: function (boylie) {
       let result = 0.0;
       let arr = this.bewertung[boylie];
