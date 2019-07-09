@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Hallo Boylies</title>
+    <script src="https://unpkg.com/vue"></script>
+    <link rel="stylesheet" href="layout.css" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+</head>
+
+<body>
+    <div id="app">
+        <div id="header">
+            <span><img src="assets/25.png" alt="25"></span>
+            <span>
+                <h1>{{ greeting }}</h1>
+            </span>
+            <span><img src="assets/boylie.png" alt="Boylie"></span>
+        </div>
+        <div id="content" >
+            <table>
+                <tr>
+                    <th></th>
+                    <th v-for="type in typen">
+                        {{type}}
+                    </th>
+                    <th></th>
+                </tr>
+                <tr v-for="name in boylies">
+                    <td>{{ name }}</td>
+                    <td v-for="type in typen">
+                            <button-counter v-bind:wert="bewertung[name][type]" ></button-counter>
+                    </td>
+                    <td>{{ summe[name] | euro }}  <button class="btn"  v-on:click="calc(name)">calc</button></td>
+                </tr>
+
+            </table>
+            
+        </div>
+    </div>
+
+    <script src="app.js">
+
+    </script>
+</body>
+
+</html>
