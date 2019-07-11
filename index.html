@@ -15,14 +15,54 @@
 <body>
     <div id="app">
         <div id="header">
-            <span><img src="assets/25.png" alt="25"></span>
-            <span>
-                <h1>{{ greeting }}</h1>
-            </span>
-            <span><img src="assets/boylie.png" alt="Boylie"></span>
+            <div class="container">
+                <div class="row">
+
+                    <div class="col"><img src="assets/25.png" alt="25"></div>
+                    <div class="col">
+
+                        <form>
+                            <div class="form-group">
+                                <select v-model="spiel.jahr" class="form-control" id="jahr">
+                                    <option>2019</option>
+                                    <option>2020</option>
+                                    <option>2021</option>
+                                    <option>2022</option>
+                                    <option>2023</option>
+                                </select>
+                                <select v-model="spiel.monat" class="form-control" id="monat">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                    <option>6</option>
+                                    <option>7</option>
+                                    <option>8</option>
+                                    <option>9</option>
+                                    <option>10</option>
+                                    <option>11</option>
+                                    <option>12</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select v-model="spiel.gastgeber" class="form-control" id="gastgeber">
+                                    <option v-for="b in boylies">{{b}}</option>
+                                </select>
+
+                                <button class="btn btn-info" v-on:click="save()">Speichern</button>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="col"><img src="assets/boylie.png" alt="Boylie"></div>
+                </div>
+
+            </div>
+
         </div>
         <div id="content">
-            <table class="table table-striped"> 
+            <table class="table table-striped">
                 <thead class="thead-light">
                     <tr>
                         <th></th>

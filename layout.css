@@ -29,9 +29,7 @@ table {
   width: 100%;
 }
   
-#header span{
-  display: inline-block;
-}
+
 #content{
   display: inline-block;
 }
