@@ -25,7 +25,7 @@ table {
 .counter{
   font-size: x-large
 }  
-.btn-info{
+.btn-info , .btn-success, .btn-danger  {
   width: 100%;
 }
   

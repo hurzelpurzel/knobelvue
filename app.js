@@ -1,6 +1,7 @@
 "use strict";
 const storageid = 'spielstore';
 var cfg = {
+  version: '0.1',
   persist: false 
 }
 
@@ -56,6 +57,7 @@ Vue.component('button-counter', {
 var app = new Vue({
   el: '#app',
   data: {
+    version: cfg.version,
     spiel: { jahr: '', monat: '', gastgeber: '' },
     boylies: ['Uwe', 'Fedde', 'Hubi', 'Ludger', 'Schnitte', 'Guido'],
     typen: ['Runde', 'AK', 'Hälfte', 'Out', 'Out Alle', 'Drei Harte', 'Strafen'],
@@ -63,9 +65,13 @@ var app = new Vue({
       'Uwe': {}, 'Fedde': {}, 'Hubi': {}, 'Ludger': {},
       'Schnitte': {}, 'Guido':  {}
     },
+    active: {
+      'Uwe': true, 'Fedde': true, 'Hubi': true, 'Ludger': true,
+      'Schnitte': true, 'Guido':  true
+    },
     summe: {
       'Uwe': 0, 'Fedde': 0, 'Hubi': 0, 'Ludger': 0,
-      'Schnitte': 0, 'Guido': 0, 'Gesamt': 0
+      'Schnitte': 0, 'Guido': 0, 'Gesamt': 0, 'Schnitt':0
     }
   },
   beforeMount: function () {
@@ -74,6 +80,9 @@ var app = new Vue({
 
   },
   methods: {
+    toggleActive: function(boylie){
+        this.active[boylie]=!this.active[boylie];
+    },
     save: function () {
       let comp = this.composite();
       if(cfg.persist){
@@ -110,8 +119,10 @@ var app = new Vue({
     calcAll: function () {
       for (let index = 0; index < this.boylies.length; index++) {
         const name = this.boylies[index];
-        this.calc(name);
-      }
+        if(this.active[name]){
+          this.calc(name);
+        }
+              }
     },
     calc: function (boylie) {
       let result = 0.0;
