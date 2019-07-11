@@ -67,11 +67,11 @@
             <table class="table table-striped">
                 <thead class="thead-light">
                     <tr>
-                        <th></th>
+                        <th>R: {{runde}}</th>
                         <th v-for="type in typen">
                             {{type}}
                         </th>
-                        <th><button class="btn btn-info" v-on:click="calcAll()">Summen</button></th>
+                        <th><span class="counter">{{ summe['Gesamt'] | euro }}</span></th>
                     </tr>
                 </thead>
                 <tbody>

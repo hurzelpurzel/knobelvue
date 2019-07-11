@@ -2,7 +2,7 @@
 const storageid = 'spielstore';
 var cfg = {
   version: '0.1',
-  persist: false 
+  persist: false
 }
 
 class Werte {
@@ -11,13 +11,14 @@ class Werte {
     this.boylie = boylie;
     this.counter = 0;
   }
-  
+
 }
 
 
 /*----------------------------------*/
 Vue.filter('euro', function (value) {
   if (!value) return '0.00 €'
+  if (value === -1) { return app.summe['Schnitt'].toString() + ' €'; }
   let result = value * 0.5;
   return result.toString() + ' €';
 })
@@ -31,12 +32,13 @@ Vue.component('button-counter', {
       counter: 0
     }
   },
-  beforeMount: function(){
+  beforeMount: function () {
     this.sync();
   },
   methods: {
     sync: function () {
       this.counter = this.wert.counter;
+      app.calcAll();
     },
     inc: function () {
       this.wert.counter += 1;
@@ -45,6 +47,7 @@ Vue.component('button-counter', {
 
     dec: function () {
       this.wert.counter -= 1;
+      if (this.wert.counter < 0) this.wert.counter = 0;
       this.sync();
     }
   },
@@ -58,20 +61,21 @@ var app = new Vue({
   el: '#app',
   data: {
     version: cfg.version,
+    runde: 1,
     spiel: { jahr: '', monat: '', gastgeber: '' },
     boylies: ['Uwe', 'Fedde', 'Hubi', 'Ludger', 'Schnitte', 'Guido'],
     typen: ['Runde', 'AK', 'Hälfte', 'Out', 'Out Alle', 'Drei Harte', 'Strafen'],
     bewertung: {
       'Uwe': {}, 'Fedde': {}, 'Hubi': {}, 'Ludger': {},
-      'Schnitte': {}, 'Guido':  {}
+      'Schnitte': {}, 'Guido': {}
     },
     active: {
       'Uwe': true, 'Fedde': true, 'Hubi': true, 'Ludger': true,
-      'Schnitte': true, 'Guido':  true
+      'Schnitte': true, 'Guido': true
     },
     summe: {
       'Uwe': 0, 'Fedde': 0, 'Hubi': 0, 'Ludger': 0,
-      'Schnitte': 0, 'Guido': 0, 'Gesamt': 0, 'Schnitt':0
+      'Schnitte': 0, 'Guido': 0, 'Gesamt': 0, 'Schnitt': 0
     }
   },
   beforeMount: function () {
@@ -80,50 +84,48 @@ var app = new Vue({
 
   },
   methods: {
-    toggleActive: function(boylie){
-        this.active[boylie]=!this.active[boylie];
+    toggleActive: function (boylie) {
+      this.active[boylie] = !this.active[boylie];
+      if (!this.active[boylie]) {
+        this.initOne(boylie);
+        this.calcAll();
+        this.summe[boylie] = -1;
+      }
     },
     save: function () {
       let comp = this.composite();
-      if(cfg.persist){
-        window.localStorage.setItem(storageid, JSON.stringify(comp));  
-      }else{
+      if (cfg.persist) {
+        window.localStorage.setItem(storageid, JSON.stringify(comp));
+      } else {
         window.sessionStorage.setItem(storageid, JSON.stringify(comp));
 
       }
-          },
+    },
     load: function () {
-      let spielStr = cfg.persist ? window.localStorage.getItem(storageid):window.sessionStorage.getItem(storageid);
+      let spielStr = cfg.persist ? window.localStorage.getItem(storageid) : window.sessionStorage.getItem(storageid);
       if (spielStr) {
-        let comp=JSON.parse(spielStr);
+        let comp = JSON.parse(spielStr);
         this.setComposite(comp);
-      } 
-    
+      }
+
     },
-    composite: function(){
-        return {
-         spiel: this.spiel,
-         bewertung: this.bewertung,
-         summe: this.summe
-       };
-    },
-    setComposite: function(comp){
-        if(comp){
-          this.spiel = comp.spiel;
-          this.bewertung = comp.bewertung;
-          this.summe= comp.summe;
-        }
-       
-    },
-    
+
     calcAll: function () {
+      let counter = 0;
+      let gesamt = 0;
       for (let index = 0; index < this.boylies.length; index++) {
         const name = this.boylies[index];
-        if(this.active[name]){
-          this.calc(name);
+
+        if (this.active[name]) {
+          counter += 1;
+          gesamt += this.calc(name);
         }
-              }
+        this.summe['Gesamt'] = gesamt;
+        this.summe['Schnitt'] = gesamt / counter;
+      }
+      this.calcRunde();
     },
+    /* ---------------------private section --------------------*/
     calc: function (boylie) {
       let result = 0.0;
       let arr = this.bewertung[boylie];
@@ -132,8 +134,18 @@ var app = new Vue({
         result += this.berechne(element);
       }
       this.summe[boylie] = result;
+      return result;
     },
-    berechne(element) {
+    calcRunde: function(){
+      let res=0;
+      for (let index = 0; index < this.boylies.length; index++) {
+        const name = this.boylies[index];
+        res += this.bewertung[name]['Runde'].counter;
+        res += this.bewertung[name]['AK'].counter;
+      }  
+      this.runde=res+1;
+    },
+    berechne: function(element) {
       switch (element.typ) {
         case 'Runde': return element.counter * 2.5; break;
         case 'AK': return element.counter * 5; break;
@@ -144,16 +156,36 @@ var app = new Vue({
         case 'Strafen': return element.counter * 0.5; break;
       }
     },
-    
+    composite: function () {
+      return {
+        spiel: this.spiel,
+        bewertung: this.bewertung,
+        summe: this.summe
+      };
+    },
+    setComposite: function (comp) {
+      if (comp) {
+        this.spiel = comp.spiel;
+        this.bewertung = comp.bewertung;
+        this.summe = comp.summe;
+      }
+
+    },
+
     init() {
       for (let index = 0; index < this.boylies.length; index++) {
         const name = this.boylies[index];
-        for (let index1 = 0; index1 < this.typen.length; index1++) {
-          const typ = this.typen[index1];
-
-          this.bewertung[name][typ] = new Werte(typ, name);
-        }
+        this.initOne(name);
       }
+    },
+
+    initOne(name) {
+      for (let index1 = 0; index1 < this.typen.length; index1++) {
+        const typ = this.typen[index1];
+
+        this.bewertung[name][typ] = new Werte(typ, name);
+      }
+      this.summe[name] = 0;
     }
   }
 })
