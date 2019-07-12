@@ -1,7 +1,7 @@
 "use strict";
 const storageid = 'spielstore';
 var cfg = {
-  version: '0.1',
+  version: '0.2',
   persist: false
 }
 
@@ -28,27 +28,29 @@ Vue.component('button-counter', {
   props: ['wert'],
   data: function () {
     return {
-
-      counter: 0
+      name: this.wert.boylie,
+      typ: this.wert.typ,
+      counter:  0
     }
   },
-  beforeMount: function () {
-    this.sync();
+  beforeMount: function(){
+    this.counter = this.wert.counter;
+  
   },
   methods: {
-    sync: function () {
-      this.counter = this.wert.counter;
-      app.calcAll();
-    },
+   
     inc: function () {
-      this.wert.counter += 1;
-      this.sync();
+      this.counter++;
+      this.$emit('inc', { 'name': this.name, 'typ' : this.typ});
+      
     },
 
     dec: function () {
-      this.wert.counter -= 1;
-      if (this.wert.counter < 0) this.wert.counter = 0;
-      this.sync();
+      if(this.counter > 0){
+        this.counter--;
+        this.$emit('dec', { 'name': this.name, 'typ' : this.typ});
+        
+      }
     }
   },
   template: '<span><button class="btn btn-outline-success" v-on:click="inc">+</button> \
@@ -84,6 +86,18 @@ var app = new Vue({
 
   },
   methods: {
+    inc: function(event){
+        let name = event.name;
+        let typ = event.typ;
+        this.bewertung[name][typ].counter += 1;
+        this.calcAll();
+    },
+    dec: function(event){
+      let name = event.name;
+      let typ = event.typ;
+      this.bewertung[name][typ].counter -= 1;
+      this.calcAll();
+    },
     toggleActive: function (boylie) {
       this.active[boylie] = !this.active[boylie];
       if (!this.active[boylie]) {

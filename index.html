@@ -13,7 +13,7 @@
 </head>
 
 <body>
-    <div id="app">
+    <div id="app" >
         <div id="header">
             <div class="container">
                 <div class="row">
@@ -75,10 +75,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="name in boylies">
+                    <tr v-for="name in boylies"  >
                         <td><button class="btn " v-bind:class="{ 'btn-success':active[name], 'btn-danger':!active[name] }" v-on:click="toggleActive(name)">{{ name }}</button></td>
                         <td v-for="type in typen">
-                            <button-counter v-bind:wert="bewertung[name][type]"></button-counter>
+                            <button-counter v-on:inc="inc" v-on:dec="dec" v-bind:wert="bewertung[name][type]"></button-counter>
                         </td>
                         <td><span class="counter">{{ summe[name] | euro }}</span></td>
                     </tr>
