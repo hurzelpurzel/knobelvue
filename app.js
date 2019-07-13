@@ -30,31 +30,32 @@ Vue.component('button-counter', {
     return {
       name: this.wert.boylie,
       typ: this.wert.typ,
-      counter:  0
+      
     }
-  },
-  beforeMount: function(){
-    this.counter = this.wert.counter;
-  
   },
   methods: {
    
     inc: function () {
-      this.counter++;
-      this.$emit('inc', { 'name': this.name, 'typ' : this.typ});
+     
+      if(this.typ === 'Out Alle'){
+        this.$emit('inco', { 'name': this.name, 'typ' : this.typ});
+      }else{
+        this.$emit('inc', { 'name': this.name, 'typ' : this.typ});
+      }
       
     },
 
     dec: function () {
-      if(this.counter > 0){
-        this.counter--;
+      if(this.typ === 'Out Alle'){
+        this.$emit('deco', { 'name': this.name, 'typ' : this.typ});
+       
+      }else    if(this.wert.counter > 0){
         this.$emit('dec', { 'name': this.name, 'typ' : this.typ});
-        
       }
     }
   },
   template: '<span><button class="btn btn-outline-success" v-on:click="inc">+</button> \
-  <span class="counter">{{counter}}</span> \
+  <span class="counter"><slot></slot></span> \
   <button class="btn btn-outline-danger"  v-on:click="dec">-</button> </span>'
 })
 
@@ -86,6 +87,30 @@ var app = new Vue({
 
   },
   methods: {
+     incOther: function (event) {
+      let me = event.name;
+      let typ = event.typ;
+        
+      for (let index = 0; index < this.boylies.length; index++) {
+        const name = this.boylies[index];
+        if (this.active[name]&& name !== me) {
+          this.bewertung[name][typ].counter =+1;
+        }
+      }
+      this.calcAll();
+    },
+    decOther: function (event) {
+      let me = event.name;
+      let typ = event.typ;
+        
+      for (let index = 0; index < this.boylies.length; index++) {
+        const name = this.boylies[index];
+        if (this.active[name]&& name !== me) {
+          this.bewertung[name][typ].counter =-1;
+        }
+      }
+      this.calcAll();
+    },
     inc: function(event){
         let name = event.name;
         let typ = event.typ;
@@ -100,11 +125,14 @@ var app = new Vue({
     },
     toggleActive: function (boylie) {
       this.active[boylie] = !this.active[boylie];
+      this.initOne(boylie);
+   
       if (!this.active[boylie]) {
-        this.initOne(boylie);
-        this.calcAll();
         this.summe[boylie] = -1;
+      }else{
+        this.summe[boylie] = 0;
       }
+      this.calcAll();
     },
     save: function () {
       let comp = this.composite();
