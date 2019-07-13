@@ -137,6 +137,7 @@ var app = new Vue({
     save: function () {
       let comp = this.composite();
       if (cfg.persist) {
+        let store=firestore.firestore();
         window.localStorage.setItem(storageid, JSON.stringify(comp));
       } else {
         window.sessionStorage.setItem(storageid, JSON.stringify(comp));

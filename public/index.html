@@ -5,6 +5,7 @@
     <title>Hallo Boylies</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <script src="https://unpkg.com/vue"></script>
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         crossorigin="anonymous">
 
@@ -13,13 +14,13 @@
 </head>
 
 <body>
-    <div id="app" >
+    <div id="app">
         <div id="header">
             <div class="container">
                 <div class="row">
 
                     <div class="col"><img src="assets/25.png" alt="25">
-                    <div>Hallo Boylies ({{version}})</div>
+                        <div>Hallo Boylies ({{version}})</div>
                     </div>
                     <div class="col">
 
@@ -75,14 +76,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="name in boylies"  >
-                        <td><button class="btn " v-bind:class="{ 'btn-success':active[name], 'btn-danger':!active[name] }" v-on:click="toggleActive(name)">{{ name }}</button></td>
+                    <tr v-for="name in boylies">
+                        <td><button class="btn "
+                                v-bind:class="{ 'btn-success':active[name], 'btn-danger':!active[name] }"
+                                v-on:click="toggleActive(name)">{{ name }}</button></td>
                         <td v-for="type in typen">
-                            <button-counter v-on:inc="inc" v-on:dec="dec" v-on:inco="incOther" v-on:deco="decOther" v-bind:wert="bewertung[name][type]">
+                            <button-counter v-on:inc="inc" v-on:dec="dec" v-on:inco="incOther" v-on:deco="decOther"
+                                v-bind:wert="bewertung[name][type]">
                                 {{bewertung[name][type].counter}}
                             </button-counter>
                         </td>
-                        <td><span class="counter" >{{ summe[name] | euro }}</span></td>
+                        <td><span class="counter">{{ summe[name] | euro }}</span></td>
                     </tr>
                 </tbody>
 
@@ -93,7 +97,19 @@
     <!-- built files will be auto injected 
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"  crossorigin="anonymous"></script>-->
+    <!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
 
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/6.3.0/firebase-app.js"></script>
+
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/6.3.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.3.0/firebase-firestore.js"></script>
+    <script src="firebase-cfg.js"></script>
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    </script>
     <script src="app.js">
 
     </script>
